@@ -1,0 +1,27 @@
+{
+  "name": "drizzle-crud",
+  "version": "1.0.0",
+  "description": "getting hands on with drizzle",
+  "homepage": "https://github.com/dev-doyan/drizzle-crud#readme",
+  "bugs": {
+    "url": "https://github.com/dev-doyan/drizzle-crud/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-doyan/drizzle-crud.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14",
+    "pg": "^8.22.0"
+  }
+}
