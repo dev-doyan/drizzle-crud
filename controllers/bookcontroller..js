@@ -4,77 +4,114 @@ import { eq } from "drizzle-orm";
 
 //create
 
-export const createbook=async(req,res)=>{
+export const createbook = async (req, res) => {
+    try {
+        const { title, description, authorId } = req.body;
 
-    const{title,descrription,authorId}=req.body;
-     if(!title || !authorId){
-        return res.status(400).json({message:"missing details" });
-     }
+        if (!title || !authorId) {
+            return res.status(400).json({ message: "missing details" });
+        }
 
-    const result =  await db.insert(bookTable).values({title,description,authorId}).returning({id:bookTable.id});//returning returns what u want to show
-    return res.status(201).json({message:"book added"},result)
+        const result = await db
+            .insert(bookTable)
+            .values({ title, description, authorId })
+            .returning({ id: bookTable.id });
 
-    
-}
+        return res.status(201).json({ message: "book added", result });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
+    }
+};
 
 //read
 
-export const getallbook=async(req,res)=>{
-    const result=await db.select({
-        id:bookTable.id,
-        title:bookTable.title
-    }).from(bookTable);
-    res.status(200).json(result)
-}
+export const getallbook = async (req, res) => {
+    try {
+        const result = await db
+            .select({
+                id: bookTable.id,
+                title: bookTable.title,
+            })
+            .from(bookTable);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
+    }
+};
 
 //read byid
 
-export const getbookbyid=async(req,res)=>{
-const id=req.params.id;
-const bid=Number(id)
+export const getbookbyid = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-if(isNaN(bid)){
-    return res.status(400).json({message:"invalid id "})
-}
-    const result=await db.select({title:bookTable.title}).from(bookTable).where(eq(bookTable.id,bid));
-    res.status(200).json(result[0]);
+        const result = await db
+            .select({ title: bookTable.title })
+            .from(bookTable)
+            .where(eq(bookTable.id, id));
 
-}
+        res.status(200).json(result[0]);
 
+    } catch (err) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
+    }
+};
 
 //delete
 
-export const deletebook=async(req,res)=>{
-    const id=req.params.id;
+export const deletebook = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-    const bid=Number(id)
+        const result = await db
+            .delete(bookTable)
+            .where(eq(bookTable.id, id))
+            .returning({ deletednook: bookTable.title });
 
-if(isNaN(bid)){
-    return res.status(400).json({message:"invalid id "})
-}
-const result = await db.delete(bookTable).where(eq(bookTable.id,bid)).returning({deletednook:bookTable.title});
-res.json(result[0]);
+        res.json(result[0]);
 
+    } catch (err) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
+    }
+};
 
+//update
 
-}
+export const updatebook = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { title, description } = req.body;
 
-//upddate
+        const result = await db
+            .update(bookTable)
+            .set({ title, description })
+            .where(eq(bookTable.id, id))
+            .returning({
+                id: bookTable.id,
+                title: bookTable.title,
+            });
 
+        return res.status(200).json(result[0]);
 
-export const updatebook=async(req,res)=>{
-
-    const id=req.params.id;
-    const{title,description}=req.body;
-const bid=Number(id)
-
-if(isNaN(bid)){
-    return res.status(400).json({message:"invalid id "})
-}
-
-const result=await db.update(bookTable).set({title,description}).returning({id: bookTable.id,
-    title: bookTable.title,})
-
-    return res.status(200).json(result);
-
-}
+    } catch (err) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: err.message,
+        });
+    }
+};
