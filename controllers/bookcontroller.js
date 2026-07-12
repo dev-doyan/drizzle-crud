@@ -42,7 +42,7 @@ if(title){
         const result = await db
             .select({
                 id: bookTable.id,
-                title: bookTable.title,
+                title: bookTable.title,    //check foreign key and join implementation 
             })
             .from(bookTable);
 
