@@ -1,5 +1,5 @@
-import { authorTable } from "../models/authorschema";
-import db from "../db/index.js";
+import  authorTable  from "../models/authorschema.js";
+import db from "../db/index.js";   //in export default donnt usse urly braces
 import { eq } from "drizzle-orm";
 
 //create

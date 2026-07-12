@@ -1,4 +1,4 @@
-import { bookTable } from "../models/bookschema";
+import bookTable  from "../models/bookschema.js";
 import db from "../db/index.js";
 import { eq } from "drizzle-orm";
 
@@ -74,16 +74,19 @@ export const getbookbyid = async (req, res) => {
 export const deletebook = async (req, res) => {
     try {
         const id = req.params.id;
+        console.log("Deleting ID:", id);
 
         const result = await db
             .delete(bookTable)
             .where(eq(bookTable.id, id))
-            .returning({ deletednook: bookTable.title });
+            .returning({ deletedBook: bookTable.title });
+
+        console.log(result);
 
         res.json(result[0]);
-
     } catch (err) {
-        return res.status(500).json({
+        console.log(err);
+        res.status(500).json({
             message: "Internal Server Error",
             error: err.message,
         });
