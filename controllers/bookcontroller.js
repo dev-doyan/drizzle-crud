@@ -1,6 +1,6 @@
 import bookTable  from "../models/bookschema.js";
 import db from "../db/index.js";
-import { eq } from "drizzle-orm";
+import { eq ,sql} from "drizzle-orm";
 
 //create
 
@@ -31,6 +31,14 @@ export const createbook = async (req, res) => {
 
 export const getallbook = async (req, res) => {
     try {
+const {title}=req.query;
+if(title){
+    const books= await db.select({id:bookTable.id,title:bookTable.title}).from(bookTable).where(sql`to_tsvector('english', ${bookTable.title}) @@ to_tsquery('english', ${title})`);
+    return res.status(200).json(books)
+}
+
+
+
         const result = await db
             .select({
                 id: bookTable.id,
